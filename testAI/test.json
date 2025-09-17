@@ -1,0 +1,20 @@
+{
+    "name" : "add_numbers",
+    "description" :  "Add two numbers together",
+    "parameters" : [
+        {
+            "name" : "a",
+            "type" : "int",
+            "description" : "The first number to add"
+        },
+        {
+            "name" : "b",
+            "type" : "int",
+            "description" : "The second number to add"
+        }
+    ],
+    "return_type" : {
+        "type" : "int",
+        "description" : "The sum of the two numbers"
+    }
+}
