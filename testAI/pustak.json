@@ -12,7 +12,9 @@
   "paths": {
     "/": {
       "get": {
+        "operationId": "getBooks",
         "summary": "Get all books",
+        "description": "Retrieve a list of all books in the collection.",
         "responses": {
           "200": {
             "description": "List of books",
@@ -30,7 +32,9 @@
         }
       },
       "post": {
+        "operationId": "addBook",
         "summary": "Add a new book",
+        "description": "Add a new book to the collection.",
         "requestBody": {
           "required": true,
           "content": {
@@ -57,15 +61,17 @@
     },
     "/{id}": {
       "get": {
+        "operationId": "getBookById",
         "summary": "Get book by ID",
+        "description": "Retrieve a book by its ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+              "schema": {
+                "type": "string"
+              }
           }
         ],
         "responses": {
@@ -85,7 +91,9 @@
         }
       },
       "put": {
+        "operationId": "updateBookById",
         "summary": "Update book by ID",
+        "description": "Update the details of a book by its ID.",
         "parameters": [
           {
             "name": "id",
@@ -120,7 +128,9 @@
         }
       },
       "delete": {
+        "operationId": "deleteBookById",
         "summary": "Delete book by ID",
+        "description": "Delete a book from the collection by its ID.",
         "parameters": [
           {
             "name": "id",
@@ -144,8 +154,8 @@
       "Book": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string"
+          "price": {
+            "type": "float"
           },
           "title": {
             "type": "string"

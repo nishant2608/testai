@@ -1,0 +1,10 @@
+{
+	"servers": {
+		"mcpGenv1": {
+			"type": "stdio",
+			"command": "E:\\Quest\\testAIRepo\\testAI\\build\\.venv\\Scripts\\python.exe",
+			"args": ["E:\\Quest\\testAIRepo\\testAI\\build\\mcp_srv_src.py"]
+		}
+	},
+	"inputs": []
+}
