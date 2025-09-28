@@ -11,4 +11,4 @@ string write_tool(FuncDef tool);
 
 string write_main();
 
-string write_python_file(vector<FuncDef>& tools,vector<Schema>& schemas);
+string write_python_file(vector<FuncDef>& tools,vector<Schema*>& schemas);

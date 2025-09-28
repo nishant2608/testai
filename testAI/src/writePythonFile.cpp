@@ -16,14 +16,23 @@ string write_import_statements(){
 
 string write_schema(Schema sch){
     string code = "class " + sch.getName() + "(BaseModel):\n";
-    for(Parameter param : sch.getParameters()){
+    for(Parameter param : sch.getProperties()){
         code +="\t";
         code+=param.getName();
-        if(param.getType()=="string"){
+        Schema s = *(param.getSchema());
+        if(s.getType()==Type::STRING){
             code+=": str\n";
         }
-        else{
+        else if(s.getType()==Type::NUMBER){
             code+=": float\n";
+        }
+        else if(s.getType()==Type::BOOLEAN){
+            code+=": bool\n";
+        }
+        else if(s.getType()==Type::OBJECT){
+            code+=": ";
+            code += s.getName();
+            code += "\n";
         }
     }
     code+="\n";
@@ -46,13 +55,8 @@ string write_tool(FuncDef tool){
     string line = "def " + tool.getName() + "(";
     int i=0;
     for(Parameter param : tool.getParameters()){
-        string type;
-        if(param.getType()=="string"){
-            type = "str";
-        }
-        else{
-            type ="float";
-        }
+        Schema sch = *(param.getSchema());
+        string type = typeToString(sch.getType());
         string c="";
         if(i){
             c = ",";
@@ -65,7 +69,7 @@ string write_tool(FuncDef tool){
         if(!tool.getParameters().empty()){
             line+=", ";
         }
-        line+= "schema1 : " + tool.getSchemaName();
+        line+= "requestBody : " + tool.getSchemaName();
     }
     line+= ") -> str:";
     code+=line;
@@ -82,7 +86,7 @@ string write_tool(FuncDef tool){
     string finalUrl = toPythonFString(tool.getUrl());
     line2+= finalUrl;
     if(!tool.getSchemaName().empty()){
-        line2+= ",json = schema1.model_dump()";
+        line2+= ",json = requestBody.model_dump()";
     }
     line2+= ")\n";
     code+=line2;
@@ -99,13 +103,16 @@ string write_main(){
     return code;
 }
 
-string write_python_file(vector<FuncDef>& tools,vector<Schema>& schemas){
+string write_python_file(vector<FuncDef>& tools,vector<Schema*>& schemas){
     string file;
     file+= write_import_statements();
     file+="\n";
-    for(Schema sch : schemas){
-        file+= write_schema(sch);
-        file+="\n";
+    for(Schema* sch : schemas){
+        if(sch->getType() == Type::OBJECT){
+            file+= write_schema(*sch);
+            file+="\n";
+        }
+        
     }
     for(FuncDef tool : tools){
         file+=write_tool(tool);

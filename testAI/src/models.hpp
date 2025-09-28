@@ -3,16 +3,34 @@
 #include<bits/stdc++.h>
 using namespace std;
 
+enum In{
+    PATH,
+    QUERY,
+    HEADER,
+    COOKIE
+};
+
+In stringToIn(string s);
+
+class Schema;
+
 class Parameter{
     private:
         string name;
-        string type;
+        In in;
+        Schema* schema;
     public:
-        Parameter(string n, string t): name(n), type(t) {}
+        Parameter() = default;
+
+        // Getters
         string getName() const { return name; }
-        string getType() const { return type; }
+        In getIn() const { return in; }
+        Schema* getSchema() const { return schema; }
+
+        // Setters
         void setName(const string& n) { name = n; }
-        void setType(const string& t) { type = t; }
+        void setIn(const string& i) { in = stringToIn(i); }
+        void setSchema(Schema* s) { schema = s; }
 };
 
 enum Method{
@@ -25,6 +43,19 @@ enum Method{
 string methodToString(Method m);
 
 Method stringToMethod(string s );
+
+
+enum Type{
+    OBJECT,
+    STRING,
+    ARRAY,
+    NUMBER,
+    BOOLEAN
+};
+
+string typeToString(Type t);
+
+Type stringToType(string s);
 
 class FuncDef{
     private:
@@ -57,13 +88,28 @@ class FuncDef{
 class Schema{
     private:
         string name;
-        vector<Parameter> parameters;
+        Type type;
+        string description;
+        vector<Parameter> properties;
+        vector<string> required;
+        Schema* items;
 
     public:
         Schema() = default;
-        Schema(string n, vector<Parameter> p) : name(n), parameters(p){}
-        string getName() const {return name;}
-        vector<Parameter> getParameters() const { return parameters; }
+
+        // Getters
+        string getName() const { return name; }
+        Type getType() const { return type; }
+        string getDescription() const { return description; }
+        vector<Parameter> getProperties() const { return properties; }
+        vector<string> getRequired() const { return required; }
+        Schema* getItems() const { return items; }
+
+        // Setters
         void setName(const string& n) { name = n; }
-        void setParameters(const vector<Parameter>& p) { parameters = p; }
+        void setType(const string& t) { type = stringToType(t); }
+        void setDescription(const string& d) { description = d; }
+        void setProperties(const vector<Parameter> p) { properties = p; }
+        void setRequired(const vector<string>& r) { required = r; }
+        void setItems(Schema* i) { items = i; }
 };
