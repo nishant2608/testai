@@ -1,4 +1,4 @@
-add In to param tools
+
 change ifs to switch case
-check for case- param name is given and schema is given and not referenced (lower case class name)
 multiple similar schemas
+handle arrays

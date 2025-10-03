@@ -67,8 +67,18 @@ void createTool(vector<FuncDef>& tools, string path, json obj,string method){
         extractParams(p,obj.at("parameters"));
     }
     if(obj.contains("requestBody")){
-        string ref = obj["requestBody"]["content"]["application/json"]["schema"]["$ref"];
-        tool.setSchemaName(nameFromReference(ref));
+        if(obj["requestBody"]["content"]["application/json"]["schema"].contains("$ref")){
+            string ref = obj["requestBody"]["content"]["application/json"]["schema"]["$ref"];
+            tool.setSchemaName(nameFromReference(ref));
+        }
+        else{
+            string schemaName = tool.getSummary()+ " request body"; 
+            transform(schemaName.begin(), schemaName.end(), schemaName.begin(), [](unsigned char c){ return tolower(c); });
+            replace(schemaName.begin(), schemaName.end(), ' ', '_');
+            tool.setSchemaName(schemaName);
+            addSchema(schemaName,obj["requestBody"]["content"]["application/json"]["schema"]);
+        }
+        
     }
     tool.setParameters(p);
     cout<<"tool created with name: "<<tool.getName()<<", description: "<<tool.getDescription()<<", method: "<<method<<endl;

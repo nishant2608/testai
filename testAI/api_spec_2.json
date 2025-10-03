@@ -1,0 +1,271 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Book API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/books"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "getBooks",
+        "summary": "Get all books",
+        "description": "Retrieve a list of all books in the collection.",
+        "responses": {
+          "200": {
+            "description": "List of books",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "addBook",
+        "summary": "Add a new book",
+        "description": "Add a new book to the collection.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Book"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{id}": {
+      "get": {
+        "operationId": "getBookById",
+        "summary": "Get book by ID",
+        "description": "Retrieve a book by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+              "schema": {
+                "type": "string"
+              }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Book not found"
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateBookById",
+        "summary": "Update book by ID",
+        "description": "Update the details of a book by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Book"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteBookById",
+        "summary": "Delete book by ID",
+        "description": "Delete a book from the collection by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Book deleted"
+          }
+        }
+      }
+    },
+    "/name/{name}":{
+        "get":{
+            "operationId":"getBooksByName",
+            "summary": "Get a book by name",
+            "description": "Get a book from the collection ",
+            "parameters":[
+                {
+                    "name": "name",
+                    "in":"path",
+                    "required": true,
+                    "schema":{
+                        "type": "object",
+                        "properties":{
+                            "title":{
+                                "type":"string"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "post": {
+        "operationId": "addBookByName",
+        "summary": "Add a new book by name",
+        "parameters":[
+            {
+                "name": "name",
+                "in":"path",
+                "required": true,
+                "schema":{
+                    "type": "string"
+                }
+            },
+            {
+                "name": "price",
+                "in":"query",
+                "required": true,
+                "schema":{
+                    "type": "number"
+                }
+            },
+            {
+                "name": "author",
+                "in":"header",
+                "required": true,
+                "schema":{
+                    "type": "string"
+                }
+            },
+            {
+                "name": "pages",
+                "in":"query",
+                "required": true,
+                "schema":{
+                    "type": "string"
+                }
+            },
+            {
+                "name": "session_id",
+                "in":"cookie",
+                "required": true,
+                "schema":{
+                    "type": "string"
+                }
+            }
+        ],
+        "description": "Add a new book to the collection by name.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type":"object",
+                "properties":{
+                    "price": {
+                        "type": "float"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "author": {
+                        "type": "string"
+                    },
+                    "details": {
+                        "type": "object",
+                        "properties":{
+                            "rating": {
+                                "type": "number"
+                            },
+                            "trending":{
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+              }
+            }
+            }
+        }
+        }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Book": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "float"
+          },
+          "title": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

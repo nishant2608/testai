@@ -44,6 +44,17 @@ std::string toPythonFString(const std::string& url) {
     return "f\"" + result + "\"";
 }
 
+string commaSeparatedValues(vector<string>& s){
+    string str;
+    for(int i=0;i<s.size();i++){
+        if(i){
+            str+=",";
+        }
+        str+=s[i];
+    }
+    return str;
+}
+
 string write_tool(FuncDef tool){
     string desc = tool.getSummary();
     // Convert to lowercase and replace spaces with hyphens
@@ -54,6 +65,9 @@ string write_tool(FuncDef tool){
     code+= "\")\n";
     string line = "def " + tool.getName() + "(";
     int i=0;
+    vector<string> headers;
+    vector<string> queries;
+    vector<string> cookies;
     for(Parameter param : tool.getParameters()){
         Schema sch = *(param.getSchema());
         string type = typeToString(sch.getType());
@@ -61,9 +75,37 @@ string write_tool(FuncDef tool){
         if(i){
             c = ",";
         }
-        string s = c +  param.getName() + ": " + type;
+        string s = c +  param.getName() + ": ";
+        if(sch.getType()==Type::STRING){
+            s+="str";
+        }
+        else if(sch.getType()==Type::NUMBER){
+            s+="float";
+        }
+        else if(sch.getType()==Type::BOOLEAN){
+            s+="bool";
+        }
+        else if(sch.getType()==Type::OBJECT){
+            s += sch.getName();
+        }
         line += s;
         i++;
+        string si;
+        si = "\"" + param.getName() + "\": " + param.getName();
+        switch(param.getIn()){
+            case In::QUERY :  
+                queries.push_back(si);
+                break;
+            case In::HEADER : 
+                headers.push_back(si);
+                break;
+            case In::COOKIE :
+                cookies.push_back(si);
+                break;
+            default:
+                break;
+
+        }
     }
     if(!tool.getSchemaName().empty()){
         if(!tool.getParameters().empty()){
@@ -87,6 +129,21 @@ string write_tool(FuncDef tool){
     line2+= finalUrl;
     if(!tool.getSchemaName().empty()){
         line2+= ",json = requestBody.model_dump()";
+    }
+    if(!queries.empty()){
+        line2+= ",params={";
+        line2+= commaSeparatedValues(queries);
+        line2+= "}";
+    }
+    if(!headers.empty()){
+        line2+= ",headers={";
+        line2+= commaSeparatedValues(headers);
+        line2+= "}";
+    }
+    if(!cookies.empty()){
+        line2+= ",cookies={";
+        line2+= commaSeparatedValues(cookies);
+        line2+= "}";
     }
     line2+= ")\n";
     code+=line2;
